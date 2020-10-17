@@ -11,6 +11,9 @@ import org.hibernate.cfg.Configuration;
 import org.hibernate.envers.AuditReader;
 import org.junit.Test;
 
+import java.util.HashSet;
+import java.util.Set;
+
 /**
  * This template demonstrates how to develop a test case for Hibernate Envers, using
  * its built-in unit test framework.
@@ -21,7 +24,7 @@ public class EnversUnitTestCase extends AbstractEnversTestCase {
 	@Override
 	protected Class[] getAnnotatedClasses() {
 		return new Class[] {
-//				Foo.class,
+				Foo.class,
 //				Bar.class
 		};
 	}
@@ -54,6 +57,16 @@ public class EnversUnitTestCase extends AbstractEnversTestCase {
 	@Test
 	public void hhh123Test() throws Exception {
 		AuditReader reader = getAuditReader();
-		// Do stuff...
+		Set<String> barIds = new HashSet<>();
+		barIds.add("bar1");
+		session.beginTransaction();
+		session.persist(new Foo("foo1", barIds, "baz1"));
+		session.getTransaction().commit();
+		Set<String> barIds2 = new HashSet<>();
+		barIds2.add("bar1");
+		barIds2.add("bar2");
+		session.beginTransaction();
+		session.merge(new Foo("foo1", barIds2, "baz1"));
+		session.getTransaction().commit();
 	}
 }
